@@ -26,11 +26,27 @@ class LightEmAll extends World {
   int moves;
   // the users that can play this game
   ArrayList<User> users;
+  // the api that acts as the connection and layer between the application and database
+  LightEmAllAPI api;
+  // did the user fail to login
+  boolean loginFail;
 
 
   // Constructor for database implementation with users and results stored
+  // initializes the api to the default api
   LightEmAll() {
+    this.api = new LightEmAllAPI();
+    this.users = api.retrieveUsers();
+    this.loginFail = false;
+  }
 
+  // are any of the users in this logged in
+  boolean isLoggedIn() {
+    boolean loggedIn = false;
+    for (User user : this.users) {
+      loggedIn = loggedIn || user.isLoggedIn;
+    }
+    return loggedIn;
   }
 
   // PART 3 : creates a random grid using Kruskal's algorithm
@@ -272,7 +288,7 @@ class LightEmAll extends World {
     }
   }
 
-  // creates an arraylist of all the quadrants of the given 2-d array
+  // creates an Arraylist of all the quadrants of the given 2-d array
   <T> ArrayList<ArrayList<ArrayList<T>>> generateQuadrants(ArrayList<ArrayList<T>> grid) {
     ArrayList<ArrayList<ArrayList<T>>> quads = new ArrayList<ArrayList<ArrayList<T>>>();
     ArrayList<ArrayList<T>> quad1 = new ArrayList<ArrayList<T>>();
@@ -318,13 +334,22 @@ class LightEmAll extends World {
     return quads;
   }
 
-  // creates the scene of this world
+  // creates the scene of this world depending on the state
+  // the state is determined by whether all pieces are connected, a user is or is not logged in
+  // or if a user fails to login
   public WorldScene makeScene() {
-    WorldImage boardImg = this.draw();
+    WorldImage boardImg = this.drawLogin();
     Double width = boardImg.getWidth();
     Double height = boardImg.getHeight();
     WorldScene bg = new WorldScene(width.intValue(), height.intValue());
-    if (this.allConnected()) {
+    if (this.loginFail) {
+
+    }
+    else if (!this.isLoggedIn()) {
+      bg.placeImageXY(this.drawLogin(), width.intValue() / 2, height.intValue() / 2);
+    }
+    else if (this.allConnected()) {
+
     }
     else {
       bg.placeImageXY(this.draw(), width.intValue() / 2, height.intValue() / 2);
@@ -350,6 +375,12 @@ class LightEmAll extends World {
     board = new AboveImage(board, new OverlayImage(
         new BesideImage(timeCount, moveCount),
         new RectangleImage(boardWidth.intValue(), 40, OutlineMode.SOLID, Color.gray)));
+    return board;
+  }
+
+  // draws the login screen
+  WorldImage drawLogin() {
+    WorldImage board = new RectangleImage(1000, 1000, OutlineMode.SOLID, Color.gray);
     return board;
   }
 
