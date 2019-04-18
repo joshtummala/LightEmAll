@@ -541,9 +541,8 @@ class LightEmAll extends World {
 
     Leaderboard = new AboveImage(new TextImage("Top 5 LeaderBoard", 30, Color.BLUE), board);
 
-    return new AboveImage(new TextImage("Your Score =" + Integer.toString(score), 30, Color.BLUE));
+    return new AboveImage(Leaderboard, new TextImage("Your Score =" + Integer.toString(score), 30, Color.BLUE));
   }
-
 
 }
 
