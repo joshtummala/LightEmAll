@@ -203,12 +203,13 @@ class LightEmAll extends World {
     return steps;
   }
 
-  // returns a changed version the given edges to form a
+  // returns a changed version of the given edges to form a
   // minimum spanning tree using Kruskal's algorithm
   ArrayList<Edge> createMST(ArrayList<GamePiece> nodes, ArrayList<Edge> edges) {
     HashMap<GamePiece, GamePiece> representatives = new HashMap<GamePiece, GamePiece>();
     ArrayList<Edge> edgesInTree = new ArrayList<Edge>();
     this.sortEdges(edges);
+
 
     for (GamePiece g : nodes) {
       representatives.put(g, g);
