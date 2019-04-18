@@ -1,0 +1,5 @@
+{
+  "url": "jdbc:mysql://localhost:3306/lightEmAll?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=EST5EDT",
+  "username": "lightEmAll",
+  "password": "fundies123"
+}
