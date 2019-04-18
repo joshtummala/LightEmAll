@@ -1,3 +1,5 @@
+package Objects;
+
 import java.awt.Color;
 import java.util.*;
 
@@ -909,7 +911,7 @@ class ExamplesLightEmAll {
     t.checkExpect(this.test.nodes.get(1), x);
   }
 
-  // generates a 7x7 LightEmAll game
+  // generates a 7x7 Objects.LightEmAll game
   void testBigBang(Tester t) {
     this.initData();
     this.test5.bigBang(this.test5.makeScene().width, this.test5.makeScene().height, 1);
@@ -956,15 +958,15 @@ class ExamplesLightEmAll {
     t.checkExpect(this.test3.powerRow, 1);
     t.checkExpect(this.test3.powerCol, 1);
     t.checkConstructorException(new IllegalArgumentException("Board must be more than 1 cell"),
-        "LightEmAll", 1, 1, 1);
+        "Objects.LightEmAll", 1, 1, 1);
     t.checkConstructorException(new IllegalArgumentException("Board must be more than 1 cell"),
-        "LightEmAll", 2, 0, 1);
+        "Objects.LightEmAll", 2, 0, 1);
     t.checkConstructorException(new IllegalArgumentException("Board must be more than 1 cell"),
-        "LightEmAll", 0, 2, 1);
+        "Objects.LightEmAll", 0, 2, 1);
     t.checkConstructorException(new IllegalArgumentException("Board must be more than 1 cell"),
-        "LightEmAll", -1, 2, 1);
+        "Objects.LightEmAll", -1, 2, 1);
     t.checkConstructorException(new IllegalArgumentException("Board must be more than 1 cell"),
-        "LightEmAll", 2, -1, 1);
+        "Objects.LightEmAll", 2, -1, 1);
   }
 
   void testSameGamePiece(Tester t) {
