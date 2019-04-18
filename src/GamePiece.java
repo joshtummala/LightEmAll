@@ -1,5 +1,3 @@
-package Objects;
-
 import java.awt.Color;
 import javalib.worldimages.*;
 
@@ -8,7 +6,7 @@ class GamePiece {
   // at the top-left corner of the screen
   int row;
   int col;
-  // whether this Objects.GamePiece is connected to the
+  // whether this GamePiece is connected to the
   // adjacent left, right, top, or bottom pieces
   boolean left;
   boolean right;
@@ -35,7 +33,7 @@ class GamePiece {
     return this.distance <= radius;
   }
   
-  // adds the connections in this depending on the given Objects.GamePiece
+  // adds the connections in this depending on the given GamePiece
   void addConnections(GamePiece that) {
     if (this.row == that.row && this.col < that.col) {
       this.right = true;

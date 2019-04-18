@@ -1,6 +1,3 @@
-package database;
-
-import Objects.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -20,12 +17,14 @@ public class DBUtils {
     String password;
     Connection con = null;
 
+    // constructor for creating a new DBUtils with specified fields
     public DBUtils(String url, String user, String password) {
         this.url = url;
         this.user = user;
         this.password = password;
     }
 
+    // constructor for creating a new DBUtils according to the config.json file
     public DBUtils() {
         JSONParser parser = new JSONParser();
         try {
@@ -43,6 +42,7 @@ public class DBUtils {
         }
     }
 
+    // gets a connection to the database with the fields in this
     public Connection getConnection() {
             this.con = null;
             try {
@@ -55,6 +55,7 @@ public class DBUtils {
         return this.con;
     }
 
+    // closes the connection to the database
     private void closeConnection() {
         try {
             con.close();
@@ -64,12 +65,8 @@ public class DBUtils {
         }
     }
 
-    /**
-     * this methods could be used for INSERT, DELETE, or UPDATE; or create a new table;
-     *
-     * @param sqlQuery a sql query
-     * @return an int, return -1 if this modification does not succeed; otherwise,it's fine
-     */
+    // performs an insert, update or delete on the database according to the given sql statement
+    // and returns the id of the modified item, otherwise returns -1
     public int modify(String sqlQuery) throws SQLException {
         System.out.println("SQL STATEMENT: " + sqlQuery);
         int key = -1;
@@ -89,4 +86,5 @@ public class DBUtils {
         stmt.close();
         return key;
     }
+
 }

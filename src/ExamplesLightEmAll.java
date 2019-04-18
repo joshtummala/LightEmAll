@@ -1,4 +1,3 @@
-package Objects;
 
 import javalib.impworld.WorldScene;
 import javalib.worldimages.*;
@@ -427,7 +426,7 @@ class ExamplesLightEmAll {
     t.checkExpect(this.test.nodes.get(1), x);
   }
 
-  // generates a 7x7 Objects.LightEmAll game
+  // generates a 7x7 Objects.Objects.LightEmAll game
   void testBigBang(Tester t) {
     this.initData();
     this.test5.bigBang(this.test5.makeScene().width, this.test5.makeScene().height, 1);
@@ -474,15 +473,15 @@ class ExamplesLightEmAll {
     t.checkExpect(this.test3.powerRow, 1);
     t.checkExpect(this.test3.powerCol, 1);
     t.checkConstructorException(new IllegalArgumentException("Board must be more than 1 cell"),
-            "Objects.LightEmAll", 1, 1, 1);
+            "LightEmAll", 1, 1, 1);
     t.checkConstructorException(new IllegalArgumentException("Board must be more than 1 cell"),
-            "Objects.LightEmAll", 2, 0, 1);
+            "LightEmAll", 2, 0, 1);
     t.checkConstructorException(new IllegalArgumentException("Board must be more than 1 cell"),
-            "Objects.LightEmAll", 0, 2, 1);
+            "LightEmAll", 0, 2, 1);
     t.checkConstructorException(new IllegalArgumentException("Board must be more than 1 cell"),
-            "Objects.LightEmAll", -1, 2, 1);
+            "LightEmAll", -1, 2, 1);
     t.checkConstructorException(new IllegalArgumentException("Board must be more than 1 cell"),
-            "Objects.LightEmAll", 2, -1, 1);
+            "LightEmAll", 2, -1, 1);
   }
 
   void testSameGamePiece(Tester t) {

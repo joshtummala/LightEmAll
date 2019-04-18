@@ -1,14 +1,10 @@
-package API;
-
-import database.DBUtils;
-
 import java.sql.*;
 
-public class LightEmAllMySQL {
+public class LightEmAllAPI {
     DBUtils dbUtils;
 
     // constructor creates a new API which the given utils
-    LightEmAllMySQL(DBUtils dbUtils) {
+    public LightEmAllAPI(DBUtils dbUtils) {
         this.dbUtils = dbUtils;
     }
 
@@ -23,7 +19,7 @@ public class LightEmAllMySQL {
             stmt.close();
 
         } catch (SQLException e) {
-            System.err.println("ERROR: Could not insert record: "+sql);
+            System.err.println("ERROR: Could not execute statement: "+sql);
             System.err.println(e.getMessage());
             e.printStackTrace();
         }

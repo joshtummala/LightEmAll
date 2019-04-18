@@ -1,5 +1,3 @@
-package Objects;
-
 import java.awt.Color;
 import java.util.*;
 
@@ -30,7 +28,7 @@ class LightEmAll extends World {
   ArrayList<User> users;
 
 
-  // PART 3 : creates a random grid
+  // PART 3 : creates a random grid using Kruskal's algorithm
   LightEmAll(int width, int height) {
 
     if ((width <= 1 && height <= 1)
@@ -417,6 +415,9 @@ class LightEmAll extends World {
       this.nodes = temp.nodes;
       this.powerRow = temp.powerRow;
       this.powerCol = temp.powerCol;
+      this.time = 0;
+      this.moves = 0;
+      this.radius = temp.radius;
     }
     this.updateBoard();
   }
@@ -488,8 +489,6 @@ class LightEmAll extends World {
     }
     return connected;
   }
-
-
 }
 
 

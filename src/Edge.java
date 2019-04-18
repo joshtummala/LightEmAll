@@ -1,5 +1,3 @@
-package Objects;
-
 import java.util.Random;
 
 class Edge {
