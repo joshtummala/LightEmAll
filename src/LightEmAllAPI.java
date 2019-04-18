@@ -4,8 +4,12 @@ import java.util.ArrayList;
 public class LightEmAllAPI {
     DBUtils dbUtils;
 
+    // constructor creates a new API with the default utils
+    LightEmAllAPI() {
+        this.dbUtils = new DBUtils();
+    }
     // constructor creates a new API which the given utils
-    public LightEmAllAPI(DBUtils dbUtils) {
+    LightEmAllAPI(DBUtils dbUtils) {
         this.dbUtils = dbUtils;
     }
 
@@ -74,6 +78,21 @@ public class LightEmAllAPI {
 
     ArrayList<Result> retrieveResults(String user) {
         String sqlQuery = "select * from Results where user = \'" + user + "\'";
+        return getResults(sqlQuery);
+    }
+
+
+    ArrayList<Result> retreiveLeaderBoard(int rows, int cols) {
+        String sqlQuery = "select * \n" +
+                "from results\n" +
+                "where Rrows = " + Integer.toString(rows) +
+                " and Rcolumns = "+ Integer.toString(cols) + "\n" +
+                "order by (Rtime + moves) ASC\n" +
+                "limit 5;";
+        return getResults(sqlQuery);
+    }
+
+    ArrayList<Result> getResults(String sqlQuery) {
         ArrayList<Result> results = new ArrayList<Result>();
         Connection conn;
         try {
@@ -91,4 +110,6 @@ public class LightEmAllAPI {
         this.dbUtils.closeConnection();
         return results;
     }
+
+
 }
