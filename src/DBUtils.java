@@ -1,11 +1,3 @@
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -24,22 +16,15 @@ public class DBUtils {
         this.password = password;
     }
 
-    // constructor for creating a new DBUtils according to the config.json file
+    // constructor for creating a new DBUtils with a certain url, username and password
     public DBUtils() {
-        JSONParser parser = new JSONParser();
-        try {
-            URL path = this.getClass().getResource("config.json");
-            File f = new File(path.getFile());
-            Object obj = parser.parse(new FileReader(f));
-            JSONObject jsonObject = (JSONObject) obj;
-            this.url = (String) jsonObject.get("url");
-            this.user = (String) jsonObject.get("username");
-            this.password = (String) jsonObject.get("password");
-
-        } catch (ParseException | IOException e) {
-            e.printStackTrace();
-            System.err.println("either file not found or file cannot be parsed into json");
-        }
+        // this url will work if you have the database set up in the localhost port 3306 for mysql
+        this.url = "jdbc:mysql://localhost:3306/LightEmAll?allowPublic" +
+                "KeyRetrieval=true&useSSL=false&serverTimezone=EST5EDT";
+        // a connection with the following username and password with all
+        // privileges to the LightEmAll schema will be needed for this
+        this.user = "cs2510";
+        this.password = "fundies123";
     }
 
     // gets a connection to the database with the fields in this

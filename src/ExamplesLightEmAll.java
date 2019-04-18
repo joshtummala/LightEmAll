@@ -54,6 +54,13 @@ class ExamplesLightEmAll {
   HashMap<GamePiece, Edge> cameFromEdge;
 
 
+  Result jack1;
+  Result jack2;
+  Result henry1;
+  Result henry2;
+  User Jack;
+  User Henry45;
+
 
   void initData() {
     this.test = new LightEmAll(7,7,10);
@@ -236,6 +243,20 @@ class ExamplesLightEmAll {
     this.nodes.add(this.two);
     this.nodes.add(this.three);
 
+
+    this.jack1 = new Result("Jack", 5, 5, 100, 20);
+    this.jack2 = new Result("Jack", 3, 3, 60, 15);
+    this.henry1 = new Result("Henry45", 4, 4, 40, 10);
+    this.henry2 = new Result("Henry45", 5, 5, 120, 34);
+
+    ArrayList<Result> jack = new ArrayList<Result>();
+    jack.add(this.jack1);
+    jack.add(this.jack2);
+    ArrayList<Result> henry = new ArrayList<Result>();
+    henry.add(this.henry1);
+    henry.add(this.henry2);
+    this.Jack = new User("Jack", "password", jack);
+    this.Henry45 = new User("Henry45", "0803", henry);
   }
 
   void testIsConnected(Tester t) {
@@ -253,6 +274,19 @@ class ExamplesLightEmAll {
             this.test5.board.get(0).get(1)) > 0, true);
     t.checkExpect(this.test5.shortestPath(this.test5.board.get(0).get(0),
             this.test5.board.get(3).get(3)) > 3, true);
+  }
+
+  // this is used to test the connection between the database and the application
+  // using JDBC
+  // this will only pass if the database has been setup and the connection described in
+  // DBUtils has been created
+  void testConnection(Tester t) {
+    this.initData();
+    LightEmAllAPI api = new LightEmAllAPI(new DBUtils());
+    ArrayList<User> users = api.retrieveUsers();
+    t.checkExpect(users.contains(this.Jack), true);
+    t.checkExpect(users.contains(this.Henry45), true);
+
   }
 
   void testReconstruct(Tester t) {

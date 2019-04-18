@@ -28,6 +28,11 @@ class LightEmAll extends World {
   ArrayList<User> users;
 
 
+  // Constructor for database implementation with users and results stored
+  LightEmAll() {
+
+  }
+
   // PART 3 : creates a random grid using Kruskal's algorithm
   LightEmAll(int width, int height) {
 
