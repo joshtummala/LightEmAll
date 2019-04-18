@@ -71,9 +71,7 @@ class LightEmAll extends World {
     }
 
     for (ArrayList<GamePiece> col : this.board) {
-      for (GamePiece g : col) {
-        this.nodes.add(g);
-      }
+      this.nodes.addAll(col);
     }
 
     this.mst.addAll(this.createMST(this.nodes, temp));
@@ -239,9 +237,7 @@ class LightEmAll extends World {
     this.generateFBoard(this.board);
 
     for (ArrayList<GamePiece> col : this.board) {
-      for (GamePiece g : col) {
-        this.nodes.add(g);
-      }
+      this.nodes.addAll(col);
     }
 
     this.updateBoard();
