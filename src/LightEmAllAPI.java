@@ -82,7 +82,7 @@ public class LightEmAllAPI {
     }
 
 
-    ArrayList<Result> retreiveLeaderBoard(int rows, int cols) {
+     ArrayList<Result> retreiveLeaderBoard(int rows, int cols) {
         String sqlQuery = "select * \n" +
                 "from results\n" +
                 "where Rrows = " + Integer.toString(rows) +

@@ -28,4 +28,3 @@ public class Result {
     }
 }
 
-//new AboveImage(new TextImage("Top 5 Leaderboard", 30,  Color.RED),

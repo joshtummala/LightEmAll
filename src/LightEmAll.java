@@ -525,6 +525,26 @@ class LightEmAll extends World {
     }
     return connected;
   }
+
+
+
+  public WorldImage drawLeaderBoard() {
+    ArrayList<Result> results1 = this.api.retreiveLeaderBoard(this.height, this.width);
+    WorldImage board = new EmptyImage();
+    WorldImage Leaderboard = new EmptyImage();
+
+    int score = this.time + this.moves;
+
+    for (Result r : results1) {
+      board = new AboveImage(board, r.drawResult());
+    }
+
+    Leaderboard = new AboveImage(new TextImage("Top 5 LeaderBoard", 30, Color.BLUE), board);
+
+    return new AboveImage(new TextImage("Your Score =" + Integer.toString(score), 30, Color.BLUE));
+  }
+
+
 }
 
 
