@@ -56,7 +56,7 @@ public class DBUtils {
     }
 
     // closes the connection to the database
-    private void closeConnection() {
+    public void closeConnection() {
         try {
             con.close();
         } catch (SQLException e) {
