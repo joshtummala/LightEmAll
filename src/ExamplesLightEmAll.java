@@ -464,7 +464,8 @@ class ExamplesLightEmAll {
   // generates a 7x7 Objects.Objects.LightEmAll game
   void testBigBang(Tester t) {
     this.initData();
-    this.test5.bigBang(this.test5.makeScene().width, this.test5.makeScene().height, 1);
+    LightEmAll run = new LightEmAll();
+    run.bigBang(1000, 1000, 1);
   }
 
   void testDraw(Tester t) {
@@ -492,7 +493,7 @@ class ExamplesLightEmAll {
     board = new AboveImage(board, new OverlayImage(
             new BesideImage(timeCount, moveCount),
             new RectangleImage(50, 40, OutlineMode.SOLID, Color.gray)));
-    WorldScene test = new WorldScene(50,140);
+    WorldScene test = new WorldScene(500,500);
     test.placeImageXY(this.test4.draw(), 25, 70);
     t.checkExpect(this.test4.makeScene(), test);
 

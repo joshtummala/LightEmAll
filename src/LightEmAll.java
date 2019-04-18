@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.util.*;
 
+import com.mysql.cj.util.StringUtils;
 import javalib.impworld.*;
 import javalib.worldimages.*;
 
@@ -28,8 +29,18 @@ class LightEmAll extends World {
   ArrayList<User> users;
   // the api that acts as the connection and layer between the application and database
   LightEmAllAPI api;
+  // is a user logged in
+  boolean loggedIn;
   // did the user fail to login
   boolean loginFail;
+  // is the user entering the username
+  boolean enterUser;
+  // the username of the current user
+  String username;
+  // the password of the current user
+  String password;
+  // is the user typing the username, password, row, or column
+  int tempUse;
 
 
   // Constructor for database implementation with users and results stored
@@ -37,23 +48,43 @@ class LightEmAll extends World {
   LightEmAll() {
     this.api = new LightEmAllAPI();
     this.users = api.retrieveUsers();
+    this.loggedIn = false;
     this.loginFail = false;
+    this.enterUser = true;
+    this.username = "";
+    this.password = "";
+    this.tempUse = 0;
+    this.width = 0;
+    this.height = 0;
   }
 
-  // are any of the users in this logged in
-  boolean isLoggedIn() {
+  // EFFECT: changes loggedIn in this to determine whether are any of the users in this logged in
+  void isLoggedIn() {
     boolean loggedIn = false;
     for (User user : this.users) {
+      user.login(this.username, this.password);
       loggedIn = loggedIn || user.isLoggedIn;
     }
-    return loggedIn;
+    if (!loggedIn) {
+      this.loginFail = true;
+    }
+    this.loggedIn = loggedIn;
   }
 
   // PART 3 : creates a random grid using Kruskal's algorithm
   LightEmAll(int width, int height) {
+    this.loggedIn = true;
+    this.loginFail = false;
+    this.username = "";
+    this.password = "";
+    this.initBoard(width, height);
 
+  }
+
+  // initializes the board according to requirements in part 3
+  void initBoard(int width, int height) {
     if ((width <= 1 && height <= 1)
-        || width < 1 || height < 1) {
+            || width < 1 || height < 1) {
       throw new IllegalArgumentException("Board must be more than 1 cell");
     }
 
@@ -106,20 +137,20 @@ class LightEmAll extends World {
 
     for (GamePiece target : this.nodes) {
       int diameter = Math.max(maxDiameter,
-          this.shortestPath(this.board.get(powerCol).get(powerRow), target));
+              this.shortestPath(this.board.get(powerCol).get(powerRow), target));
       if (maxDiameter <= diameter) {
         maxDiameter = diameter;
         source = target;
       }
     }
-    
+
     for (GamePiece target : this.nodes) {
       maxDiameter = Math.max(maxDiameter, this.shortestPath(source, target));
     }
-    
+
     this.radius = (maxDiameter / 2) + 1;
     this.board.get(this.powerCol).get(this.powerRow).addPowerStation();
-    
+
     Random rand = new Random();
     for (GamePiece g : this.nodes) {
       int numRotate = rand.nextInt(4);
@@ -243,6 +274,10 @@ class LightEmAll extends World {
     this.radius = radius;
     this.time = 0;
     this.moves = 0;
+    this.loginFail = false;
+    this.loggedIn = true;
+    this.username = "";
+    this.password = "";
 
     for (int i = 0; i < width; i++) {
       ArrayList<GamePiece> temp = new ArrayList<GamePiece>();
@@ -259,7 +294,6 @@ class LightEmAll extends World {
     for (ArrayList<GamePiece> col : this.board) {
       this.nodes.addAll(col);
     }
-
     this.updateBoard();
   }
 
@@ -345,13 +379,15 @@ class LightEmAll extends World {
     if (this.loginFail) {
 
     }
-    else if (!this.isLoggedIn()) {
+    else if (!this.loggedIn) {
       bg.placeImageXY(this.drawLogin(), width.intValue() / 2, height.intValue() / 2);
     }
     else if (this.allConnected()) {
-
+      bg.placeImageXY(this.drawLeaderBoard(), width.intValue() / 2, height.intValue() / 2);
     }
     else {
+      width = this.draw().getWidth();
+      height = this.draw().getHeight();
       bg.placeImageXY(this.draw(), width.intValue() / 2, height.intValue() / 2);
     }
     return bg;
@@ -380,12 +416,60 @@ class LightEmAll extends World {
 
   // draws the login screen
   WorldImage drawLogin() {
-    WorldImage board = new RectangleImage(1000, 1000, OutlineMode.SOLID, Color.gray);
+    String username = this.username;
+    String pwd = this.password;
+    String rows = Integer.toString(this.height);
+    String cols = Integer.toString(this.width);
+    if (this.username.equals("")) { username = "Username"; }
+    if (pwd.equals("")) { pwd = "Password"; }
+    else {
+      pwd = "";
+      for (int i = 0; i < this.password.length(); i++) {
+        pwd = pwd.concat("*");
+      }
+    }
+
+    if (rows.equals("0")) {rows = "Number of rows";}
+    if (cols.equals("0")) {cols = "Number of columns";}
+    WorldImage board = new RectangleImage(500, 500, OutlineMode.SOLID, Color.gray);
+    WorldImage box = new RectangleImage(200, 30, OutlineMode.OUTLINE, Color.DARK_GRAY);
+    WorldImage userBox = new OverlayImage(new TextImage(username, 15, Color.pink), box);
+    WorldImage pwdBox = new OverlayImage(new TextImage(pwd, 15, Color.pink), box);
+    WorldImage rowBox = new OverlayImage(new TextImage(rows, 15, Color.pink), box);
+    WorldImage colBox = new OverlayImage(new TextImage(cols, 15, Color.pink), box);
+    board = new OverlayImage(new AboveImage(new AboveImage(new AboveImage(userBox,
+            pwdBox), rowBox), colBox), board);
     return board;
   }
 
-  // rotates the game piece of the board that correlates with the given posn if it exists
+
+  // draws the leader board for all results of the same size as this
+  public WorldImage drawLeaderBoard() {
+    ArrayList<Result> results1 = this.api.retreiveLeaderBoard(this.height, this.width);
+    WorldImage board = new EmptyImage();
+    WorldImage Leaderboard = new EmptyImage();
+
+    int score = this.time + this.moves;
+
+    for (Result r : results1) {
+      board = new AboveImage(board, r.drawResult());
+    }
+
+    Leaderboard = new AboveImage(new TextImage("Top 5 LeaderBoard", 30, Color.BLUE), board);
+
+    return new AboveImage(Leaderboard, new TextImage("Your Score =" + Integer.toString(score),
+            30, Color.BLUE));
+  }
+
+  // the mouse events for the game depending on the current state of the game
   public void onMousePressed(Posn pos, String buttonName) {
+    if (this.loggedIn && !this.loginFail) {
+      this.MouseGame(pos, buttonName);
+    }
+  }
+
+  // rotates the game piece of the board that correlates with the given posn if it exists
+  void MouseGame(Posn pos, String buttonName) {
     int row = pos.x / 50;
     int col = pos.y / 50;
     if (this.board != null && col < this.board.size() && row < this.board.get(0).size()) {
@@ -405,9 +489,56 @@ class LightEmAll extends World {
     }
   }
 
+  // changes this based on the state and key given
+  public void onKeyEvent(String key) {
+    if (this.loginFail) {
+
+    }
+    else if (!this.loggedIn) {
+      this.loginKeyEvent(key);
+    }
+    else {
+      this.gameKeyEvent(key);
+    }
+  }
+
+  // key event when the user is logging in
+  // changes username and password in this
+  void loginKeyEvent(String key) {
+    if(key.equals("backspace")) {
+      if(this.username.length() > 0 && this.tempUse % 4 == 0) {
+        this.username = this.username.substring(0, this.username.length() - 1);
+      }
+      else if(this.password.length() > 0){
+        this.password = this.password.substring(0, this.password.length() - 1);
+      }
+    }
+    else if(key.equals("tab")) {
+      this.tempUse++;
+    }
+    else if(key.equals("enter") && this.height > 0 && this.width > 0) {
+      this.isLoggedIn();
+      if (!this.loginFail) {
+        this.initBoard(this.width, this.height);
+      }
+    }
+    else if(this.tempUse % 4 == 0) {
+      this.username = this.username.concat(key);
+    }
+    else if(this.tempUse % 4 == 1){
+      this.password = this.password.concat(key);
+    }
+    else if(this.tempUse % 4 == 2 && StringUtils.isStrictlyNumeric(key)) {
+      this.height = Integer.valueOf(key);
+    }
+    else if (StringUtils.isStrictlyNumeric(key)){
+      this.width = Integer.valueOf(key);
+    }
+  }
+
   // EXTRA CREDIT: restarts the game when r is pressed
   // moves the power generator depending on the given key if it is up, down, right or left
-  public void onKeyEvent(String key) {
+  void gameKeyEvent(String key) {
     if (key.equals("up") 
         && this.isValidIndex(this.powerCol, this.powerRow - 1)
         && this.board.get(this.powerCol).get(this.powerRow).top
@@ -526,23 +657,6 @@ class LightEmAll extends World {
     return connected;
   }
 
-
-
-  public WorldImage drawLeaderBoard() {
-    ArrayList<Result> results1 = this.api.retreiveLeaderBoard(this.height, this.width);
-    WorldImage board = new EmptyImage();
-    WorldImage Leaderboard = new EmptyImage();
-
-    int score = this.time + this.moves;
-
-    for (Result r : results1) {
-      board = new AboveImage(board, r.drawResult());
-    }
-
-    Leaderboard = new AboveImage(new TextImage("Top 5 LeaderBoard", 30, Color.BLUE), board);
-
-    return new AboveImage(Leaderboard, new TextImage("Your Score =" + Integer.toString(score), 30, Color.BLUE));
-  }
 
 }
 

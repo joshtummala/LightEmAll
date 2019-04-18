@@ -12,4 +12,10 @@ public class User {
         this.results = results;
         this.isLoggedIn = false;
     }
+
+    // EFFECT: changes isLoggedIn if the username and password are the same as the ones in this
+    void login(String username, String password) {
+        this.isLoggedIn = this.username.equals(username)
+                && this.password.equals(password);
+    }
 }
