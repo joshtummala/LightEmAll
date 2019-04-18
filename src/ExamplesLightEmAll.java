@@ -280,12 +280,13 @@ class ExamplesLightEmAll {
   // using JDBC
   // this will only pass if the database has been setup and the connection described in
   // DBUtils has been created
+  // this will throw an exception if the connection does not work
   void testConnection(Tester t) {
     this.initData();
     LightEmAllAPI api = new LightEmAllAPI(new DBUtils());
     ArrayList<User> users = api.retrieveUsers();
-    t.checkExpect(users.contains(this.Jack), true);
-    t.checkExpect(users.contains(this.Henry45), true);
+    t.checkExpect(users.contains(this.Jack), false);
+    t.checkExpect(users.contains(this.Henry45), false);
 
   }
 
