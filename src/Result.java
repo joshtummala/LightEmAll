@@ -1,3 +1,7 @@
+import javalib.worldimages.*;
+
+import java.awt.*;
+
 public class Result {
     String user;
     int rows;
@@ -13,4 +17,15 @@ public class Result {
         this.moves = moves;
     }
 
+    public WorldImage drawResult() {
+        int score = this.time + this.moves;
+
+        return new BesideImage(new OverlayImage(new TextImage(this.user, 20, Color.BLACK),
+                new RectangleImage(50, 50, OutlineMode.OUTLINE, Color.magenta)),
+                new OverlayImage(new TextImage(Integer.toString(score), 20, Color.BLACK),
+                        new RectangleImage(50, 50, OutlineMode.OUTLINE, Color.magenta)));
+
+    }
 }
+
+//new AboveImage(new TextImage("Top 5 Leaderboard", 30,  Color.RED),
