@@ -631,11 +631,86 @@ class ExamplesLightEmAll {
     t.checkExpect(this.test5.height,  0);
 
 
-      this.test5.loginFail = false;
-      this.test5.loggedIn = false;
-
-
 
 }
 
+void testLoginKeyEvent(Tester t) {
+
+    this.initData();
+
+    this.test5.username = "aloknath";
+    this.test5.tempUse = 0;
+
+    this.test5.loginKeyEvent("backspace");
+
+    t.checkExpect(this.test5.username, "aloknat");
+
+
+
+    this.test5.username = "";
+    this.test5.tempUse = 1;
+    this.test5.password = "lmaoHelpme";
+
+    this.test5.loginKeyEvent("backspace");
+
+    t.checkExpect(this.test5.password , "lmaoHelpm");
+
+  this.test5.username = "";
+  this.test5.tempUse = 2;
+  this.test5.password = "";
+
+  this.test5.loginKeyEvent("backspace");
+
+  t.checkExpect(this.test5.height , 0);
+
+  this.test5.username = "";
+  this.test5.tempUse = 3;
+  this.test5.password = "";
+
+  this.test5.loginKeyEvent("backspace");
+
+  t.checkExpect(this.test5.width , 0);
+
+  this.test5.tempUse = 0;
+
+  this.test5.loginKeyEvent("tab");
+
+  t.checkExpect(this.test5.tempUse , 1);
+
+  this.test5.username = "a";
+  this.test5.tempUse = 0;
+  this.test5.loginKeyEvent("b");
+
+  t.checkExpect(this.test5.username ,"ab");
+
+
+  this.test5.password = "s";
+  this.test5.tempUse = 1;
+  this.test5.loginKeyEvent("a");
+
+  t.checkExpect(this.test5.password , "sa");
+
+  this.test5.tempUse = 2;
+  this.test5.loginKeyEvent("2");
+
+  t.checkExpect(this.test5.height , 2);
+
+  this.test5.loginKeyEvent("a");
+
+  t.checkExpect(this.test5.height, 2);
+
+  this.test5.tempUse = 3;
+  this.test5.loginKeyEvent("3");
+
+  t.checkExpect(this.test5.width , 3);
+
+  this.test5.loginKeyEvent("2");
+
+  t.checkExpect(this.test5.width , 2);
+
+  this.test5.loginKeyEvent("a");
+
+  t.checkExpect(this.test5.width , 2);
+
+}
   }
