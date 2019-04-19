@@ -719,8 +719,6 @@ class LightEmAll extends World {
     }
     return connected;
   }
-
-
 }
 
 

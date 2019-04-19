@@ -64,10 +64,10 @@ class ExamplesLightEmAll {
 
 
   void initData() {
-    this.test = new LightEmAll(7,7,10);
-    this.test3 = new LightEmAll(2,2,2);
-    this.test2 = new LightEmAll(3,2,1);
-    this.test4 = new LightEmAll(1,2,-1);
+    this.test = new LightEmAll(7, 7, 10);
+    this.test3 = new LightEmAll(2, 2, 2);
+    this.test2 = new LightEmAll(3, 2, 1);
+    this.test4 = new LightEmAll(1, 2, -1);
     this.test5 = new LightEmAll(5, 5);
     this.empty = new GamePiece(1, 1);
     this.one = new GamePiece(0, 0);
@@ -85,13 +85,13 @@ class ExamplesLightEmAll {
     this.three.right = true;
     this.three.top = true;
     this.three.bottom = true;
-    this.five = new GamePiece(1,1);
+    this.five = new GamePiece(1, 1);
     this.five.top = true;
     this.five.left = true;
-    this.four = new GamePiece(1,1);
+    this.four = new GamePiece(1, 1);
     this.four.top = true;
     this.four.right = true;
-    this.six = new GamePiece(1,1);
+    this.six = new GamePiece(1, 1);
     this.six.bottom = true;
 
     this.board1 = new ArrayList<ArrayList<GamePiece>>();
@@ -222,7 +222,7 @@ class ExamplesLightEmAll {
             Color.lightGray), new StarImage(20, 7, OutlineMode.SOLID,
             Color.getHSBColor(0.7f, 0.8f, 1f)));
 
-    this.square =  new FrameImage(new RectangleImage(50, 50,
+    this.square = new FrameImage(new RectangleImage(50, 50,
             OutlineMode.SOLID, Color.DARK_GRAY));
     this.power = new OverlayImage(new StarImage(20, 7, OutlineMode.OUTLINE,
             Color.lightGray), new StarImage(20, 7, OutlineMode.SOLID,
@@ -265,6 +265,8 @@ class ExamplesLightEmAll {
     henry.add(this.henry2);
     this.Jack = new User("Jack", "password", jack);
     this.Henry45 = new User("Henry45", "0803", henry);
+
+
   }
 
   void testIsConnected(Tester t) {
@@ -300,7 +302,7 @@ class ExamplesLightEmAll {
 
   void testReconstruct(Tester t) {
     this.initData();
-    t.checkExpect(this.test.reconstruct(cameFromEdge, this.one, this.two),2);
+    t.checkExpect(this.test.reconstruct(cameFromEdge, this.one, this.two), 2);
     t.checkExpect(this.test.reconstruct(cameFromEdge, this.one, this.three), 3);
     t.checkExpect(this.test.reconstruct(cameFromEdge, this.three, this.three), 1);
   }
@@ -461,7 +463,7 @@ class ExamplesLightEmAll {
   void testOnMousePressed(Tester t) {
     this.initData();
     this.test.onMousePressed(new Posn(2000, 2000));
-    t.checkExpect(this.test, new LightEmAll(7,7,10));
+    t.checkExpect(this.test, new LightEmAll(7, 7, 10));
     GamePiece g = this.test.nodes.get(0);
     g.rotate();
     this.test.onMousePressed(new Posn(0, 0));
@@ -473,11 +475,11 @@ class ExamplesLightEmAll {
   }
 
   // generates a 7x7 Objects.Objects.LightEmAll game
-  void testBigBang(Tester t) {
-    this.initData();
-    LightEmAll run = new LightEmAll();
-    run.bigBang(450, 450, 1);
-  }
+  // void testBigBang(Tester t) {
+  //   this.initData();
+  //  LightEmAll run = new LightEmAll();
+  // run.bigBang(450, 450, 1);
+  //  }
 
   void testDraw(Tester t) {
     this.initData();
@@ -504,7 +506,7 @@ class ExamplesLightEmAll {
     board = new AboveImage(board, new OverlayImage(
             new BesideImage(timeCount, moveCount),
             new RectangleImage(50, 40, OutlineMode.SOLID, Color.gray)));
-    WorldScene test = new WorldScene(450,450);
+    WorldScene test = new WorldScene(450, 450);
     test.placeImageXY(this.test4.draw(), 25, 70);
     t.checkExpect(this.test4.makeScene(), test);
 
@@ -537,4 +539,101 @@ class ExamplesLightEmAll {
     t.checkExpect(this.one.sameGamePiece(this.two), false);
     t.checkExpect(this.one.sameGamePiece(this.one), true);
   }
+
+  void testDrawLogIn(Tester t) {
+    this.initData();
+
+    LightEmAll empty1 = new LightEmAll();
+
+    WorldImage box = new RectangleImage(200, 30, OutlineMode.OUTLINE, Color.DARK_GRAY);
+    WorldImage userBox = new OverlayImage(new TextImage("Username", 15, Color.darkGray), box);
+    WorldImage pwdBox = new OverlayImage(new TextImage("Password", 15, Color.darkGray), box);
+    WorldImage rowBox = new OverlayImage(new TextImage("Number of rows", 15, Color.darkGray), box);
+    WorldImage colBox = new OverlayImage(new TextImage("Number of columns", 15, Color.darkGray), box);
+    WorldImage text = new AboveImage(new TextImage("Enter all the fields", 15, Color.darkGray),
+            new TextImage("Press \'tab\' to move between fields", 15, Color.darkGray),
+            new TextImage("Press \'enter\' after all fields are filled", 15, Color.darkGray));
+
+    WorldImage board = new OverlayImage(new AboveImage(text,
+            new AboveImage(new AboveImage(new AboveImage(userBox,
+                    pwdBox), rowBox), colBox)), new RectangleImage(450, 450, OutlineMode.SOLID, Color.gray));
+
+    WorldImage box2 = new RectangleImage(200, 30, OutlineMode.OUTLINE, Color.DARK_GRAY);
+    WorldImage userBox2 = new OverlayImage(new TextImage("Username", 15, Color.darkGray), box);
+    WorldImage pwdBox2 = new OverlayImage(new TextImage("Password", 15, Color.darkGray), box);
+    WorldImage rowBox2 = new OverlayImage(new TextImage("5", 15, Color.darkGray), box);
+    WorldImage colBox2 = new OverlayImage(new TextImage("5", 15, Color.darkGray), box);
+    WorldImage text2 = new AboveImage(new TextImage("Enter all the fields", 15, Color.darkGray),
+            new TextImage("Press \'tab\' to move between fields", 15, Color.darkGray),
+            new TextImage("Press \'enter\' after all fields are filled", 15, Color.darkGray));
+
+    WorldImage board2 = new OverlayImage(new AboveImage(text,
+            new AboveImage(new AboveImage(new AboveImage(userBox2,
+                    pwdBox2), rowBox2), colBox2)), new RectangleImage(450, 450, OutlineMode.SOLID, Color.gray));
+
+    WorldImage box3 = new RectangleImage(200, 30, OutlineMode.OUTLINE, Color.DARK_GRAY);
+    WorldImage userBox3 = new OverlayImage(new TextImage("Jason", 15, Color.darkGray), box);
+    WorldImage pwdBox3 = new OverlayImage(new TextImage("********", 15, Color.darkGray), box);
+    WorldImage rowBox3 = new OverlayImage(new TextImage("5", 15, Color.darkGray), box);
+    WorldImage colBox3 = new OverlayImage(new TextImage("5", 15, Color.darkGray), box);
+    WorldImage text3 = new AboveImage(new TextImage("Enter all the fields", 15, Color.darkGray),
+            new TextImage("Press \'tab\' to move between fields", 15, Color.darkGray),
+            new TextImage("Press \'enter\' after all fields are filled", 15, Color.darkGray));
+
+    WorldImage board3 = new OverlayImage(new AboveImage(text,
+            new AboveImage(new AboveImage(new AboveImage(userBox3,
+                    pwdBox3), rowBox3), colBox3)), new RectangleImage(450, 450, OutlineMode.SOLID, Color.gray));
+
+
+
+    t.checkExpect(empty1.drawLogin(), board);
+    t.checkExpect(this.test5.drawLogin(), board2);
+
+    test5.username = "Jason";
+    test5.password = "hello123";
+
+    t.checkExpect(this.test5.drawLogin(), board3);
+  }
+
+  void testDrawLoginFail(Tester t) {
+    this.initData();
+    LightEmAll empty1 = new LightEmAll();
+
+    WorldImage board = new AboveImage(new TextImage(
+            "Login failed",25, Color.red),
+            new TextImage(
+                    "Press \'r\' to retry or",20, Color.darkGray),
+            new TextImage(
+                    "Press \'enter\' to create entry as new account",20, Color.darkGray));
+
+    t.checkExpect(this.test5.drawLoginFail(), new OverlayImage(board,
+            new RectangleImage(450, 450, OutlineMode.SOLID, Color.gray)));
+
+    t.checkExpect(empty1.drawLoginFail(), new OverlayImage(board,
+            new RectangleImage(450, 450, OutlineMode.SOLID, Color.gray)));
+  }
+
+    void testOnKeyEvent(Tester t) {
+    this.initData();
+
+    this.test5.loginFail = true;
+    this.test5.username = "Jackkkskks";
+    this.test5.password = "lollol";
+    this.test5.width = 12;
+    this.test5.height = 24;
+
+    this.test5.onKeyEvent("r");
+
+    t.checkExpect(this.test5.loginFail, false);
+    t.checkExpect(this.test5.username,  "");
+    t.checkExpect(this.test5.password , "");
+    t.checkExpect(this.test5.width , 0);
+    t.checkExpect(this.test5.height,  0);
+
+
+      this.test5.loginFail = false;
+      this.test5.loggedIn = false;
+
 }
+
+  }
