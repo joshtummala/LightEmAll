@@ -52,6 +52,7 @@ class ExamplesLightEmAll {
   HashMap<GamePiece, GamePiece> representatives;
   ArrayList<GamePiece> nodes;
   HashMap<GamePiece, Edge> cameFromEdge;
+  ArrayList<Edge> edges2 = new ArrayList<Edge>();
 
 
   Result jack1;
@@ -208,7 +209,14 @@ class ExamplesLightEmAll {
     this.edges1.add(new Edge(this.two, this.four, 10));
     this.edges1.add(new Edge(this.one, this.three, 41));
     this.edges1.add(new Edge(this.three, this.four, 21));
-
+    this.edges2 = new ArrayList<Edge>();
+    this.edges2.add(new Edge(this.one, this.two, 91));
+    this.edges2.add(new Edge(this.two, this.three, 10));
+    this.edges2.add(new Edge(this.three, this.four, 41));
+    this.cameFromEdge = new HashMap<GamePiece, Edge>();
+    this.cameFromEdge.put(this.two, this.edges2.get(0));
+    this.cameFromEdge.put(this.three, this.edges2.get(1));
+    this.cameFromEdge.put(this.four, this.edges2.get(2));
 
     this.star1 = new OverlayImage(new StarImage(20, 7, OutlineMode.OUTLINE,
             Color.lightGray), new StarImage(20, 7, OutlineMode.SOLID,
@@ -291,7 +299,10 @@ class ExamplesLightEmAll {
   }
 
   void testReconstruct(Tester t) {
-
+    this.initData();
+    t.checkExpect(this.test.reconstruct(cameFromEdge, this.one, this.two),2);
+    t.checkExpect(this.test.reconstruct(cameFromEdge, this.one, this.three), 3);
+    t.checkExpect(this.test.reconstruct(cameFromEdge, this.three, this.three), 1);
   }
 
   void testOnTick(Tester t) {
@@ -465,7 +476,7 @@ class ExamplesLightEmAll {
   void testBigBang(Tester t) {
     this.initData();
     LightEmAll run = new LightEmAll();
-    run.bigBang(1000, 1000, 1);
+    run.bigBang(450, 450, 1);
   }
 
   void testDraw(Tester t) {
@@ -493,7 +504,7 @@ class ExamplesLightEmAll {
     board = new AboveImage(board, new OverlayImage(
             new BesideImage(timeCount, moveCount),
             new RectangleImage(50, 40, OutlineMode.SOLID, Color.gray)));
-    WorldScene test = new WorldScene(500,500);
+    WorldScene test = new WorldScene(450,450);
     test.placeImageXY(this.test4.draw(), 25, 70);
     t.checkExpect(this.test4.makeScene(), test);
 
