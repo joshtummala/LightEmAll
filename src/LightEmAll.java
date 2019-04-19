@@ -513,7 +513,7 @@ class LightEmAll extends World {
 
   // changes this based on the state and key given
   public void onKeyEvent(String key) {
-    if (this.loginFail) {
+    if (this.loginFail) { // case where login has failed
       if (key.equals("r")) {
         this.loginFail = false;
         this.username = "";
@@ -540,7 +540,7 @@ class LightEmAll extends World {
       this.loginKeyEvent(key);
     }
     else if (this.allConnected()) {
-      if (key.equals("r")) {
+      if (key.equals("r")) { // restarts the board
         this.initBoard(this.width, this.height);
       }
     }
@@ -696,7 +696,7 @@ class LightEmAll extends World {
     }
   }
 
-  // adds one to the time in this every tick
+  // adds one to the time in this every tick and inserts the result if the game has ended
   public void onTick() {
     if (!this.allConnected()) {
       this.time++;
