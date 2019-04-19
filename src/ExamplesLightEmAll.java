@@ -476,11 +476,11 @@ class ExamplesLightEmAll {
   }
 
   // generates a 7x7 Objects.Objects.LightEmAll game
-  // void testBigBang(Tester t) {
-  //   this.initData();
-  //  LightEmAll run = new LightEmAll();
-  // run.bigBang(450, 450, 1);
-  //  }
+   void testBigBang(Tester t) {
+     this.initData();
+    LightEmAll run = new LightEmAll();
+   run.bigBang(450, 450, 1);
+    }
 
   void testDraw(Tester t) {
     this.initData();

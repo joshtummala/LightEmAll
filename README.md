@@ -1,16 +1,12 @@
 # LightEmAll
 
-Extra Credits:
-1) Gradient
-2) Timer
-3) Move Counter
-4) Horizontal Bias
-5) Restarting the game without closing (by pressing 'r')
-6) Additional screens depending on the state (login, login fail, game or leader board) of the game (with database)
-7) Database Connection to store all the users and results
-8) Ability to create new users in application
-9) Ability to choose size of board in application
+Brief about the project:
 
+This project was initially a class assignment. It was improved significantly with multi-user support, a database and
+database connection and more. The project makes a game that creates a minimum spanning tree that is randomly rotated.
+The tiles must be clicked on to rotate until everything is connected in the correct way. After everything is connected,
+the power station can be move using arrow keys. The power station can only light up tiles that are a certain distance
+away from it. The game cannot be won until all tiles are lit up.
 
 How to run the program:
 
