@@ -383,6 +383,7 @@ class ExamplesLightEmAll {
     this.test2.updateBoard();
     t.checkExpect(this.test2.board.get(1).get(1).distance, 0);
     t.checkExpect(this.test2.board.get(0).get(0).distance, 2);
+
   }
 
   void testUpdateGamePiece(Tester t) {
