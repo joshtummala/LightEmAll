@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.sql.SQLException;
 import java.util.*;
 
 import com.mysql.cj.util.StringUtils;
@@ -48,6 +49,9 @@ class LightEmAll extends World {
   LightEmAll() {
     this.api = new LightEmAllAPI();
     this.users = api.retrieveUsers();
+    this.nodes = new ArrayList<GamePiece>();
+    this.board = new ArrayList<ArrayList<GamePiece>>();
+    this.mst = new ArrayList<Edge>();
     this.loggedIn = false;
     this.loginFail = false;
     this.enterUser = true;
@@ -98,6 +102,7 @@ class LightEmAll extends World {
     this.radius = 0;
     this.time = 0;
     this.moves = 0;
+    this.tempUse = 0;
 
     for (int i = 0; i < width; i++) {
       ArrayList<GamePiece> temp = new ArrayList<GamePiece>();
@@ -378,7 +383,7 @@ class LightEmAll extends World {
     Double height = boardImg.getHeight();
     WorldScene bg = new WorldScene(width.intValue(), height.intValue());
     if (this.loginFail) {
-
+      bg.placeImageXY(this.drawLoginFail(), width.intValue() / 2, height.intValue() / 2);
     }
     else if (!this.loggedIn) {
       bg.placeImageXY(this.drawLogin(), width.intValue() / 2, height.intValue() / 2);
@@ -432,23 +437,33 @@ class LightEmAll extends World {
 
     if (rows.equals("0")) {rows = "Number of rows";}
     if (cols.equals("0")) {cols = "Number of columns";}
-    WorldImage board = new RectangleImage(500, 500, OutlineMode.SOLID, Color.gray);
+    WorldImage board = new RectangleImage(450, 450, OutlineMode.SOLID, Color.gray);
     WorldImage box = new RectangleImage(200, 30, OutlineMode.OUTLINE, Color.DARK_GRAY);
-    WorldImage userBox = new OverlayImage(new TextImage(username, 15, Color.pink), box);
-    WorldImage pwdBox = new OverlayImage(new TextImage(pwd, 15, Color.pink), box);
-    WorldImage rowBox = new OverlayImage(new TextImage(rows, 15, Color.pink), box);
-    WorldImage colBox = new OverlayImage(new TextImage(cols, 15, Color.pink), box);
+    WorldImage userBox = new OverlayImage(new TextImage(username, 15, Color.darkGray), box);
+    WorldImage pwdBox = new OverlayImage(new TextImage(pwd, 15, Color.darkGray), box);
+    WorldImage rowBox = new OverlayImage(new TextImage(rows, 15, Color.darkGray), box);
+    WorldImage colBox = new OverlayImage(new TextImage(cols, 15, Color.darkGray), box);
     board = new OverlayImage(new AboveImage(new AboveImage(new AboveImage(userBox,
             pwdBox), rowBox), colBox), board);
     return board;
   }
 
+  // draws the screen when the user fails the login
+  WorldImage drawLoginFail() {
+    WorldImage board = new AboveImage(new TextImage(
+            "Login failed",25, Color.red),
+            new TextImage(
+                    "Press \'r\' to retry or",20, Color.darkGray),
+            new TextImage(
+                    "Press \'enter\' to create entry as new account",20, Color.darkGray));
+
+    return new OverlayImage(board, new RectangleImage(450, 450, OutlineMode.SOLID, Color.gray));
+  }
 
   // draws the leader board for all results of the same size as this
-  public WorldImage drawLeaderBoard() {
+  WorldImage drawLeaderBoard() {
     ArrayList<Result> results1 = this.api.retreiveLeaderBoard(this.height, this.width);
     WorldImage board = new EmptyImage();
-    WorldImage Leaderboard = new EmptyImage();
 
     int score = this.time + this.moves;
 
@@ -456,10 +471,13 @@ class LightEmAll extends World {
       board = new AboveImage(board, r.drawResult());
     }
 
-    Leaderboard = new AboveImage(new TextImage("Top 5 LeaderBoard", 30, Color.BLUE), board);
+    board = new AboveImage(new AboveImage(new AboveImage(
+            new TextImage("Top 5 LeaderBoard", 25, Color.darkGray), board), new TextImage(
+                    "Your Score =" + Integer.toString(score),25, Color.cyan)),
+            new TextImage(
+                    "Press \'r\' to restart",25, Color.darkGray));
 
-    return new AboveImage(Leaderboard, new TextImage("Your Score =" + Integer.toString(score),
-            30, Color.BLUE));
+    return new OverlayImage(board, new RectangleImage(450, 450, OutlineMode.SOLID, Color.gray));
   }
 
   // the mouse events for the game depending on the current state of the game
@@ -493,25 +511,56 @@ class LightEmAll extends World {
   // changes this based on the state and key given
   public void onKeyEvent(String key) {
     if (this.loginFail) {
-
+      if (key.equals("r")) {
+        this.loginFail = false;
+        this.username = "";
+        this.password = "";
+        this.width = 0;
+        this.height = 0;
+      }
+      else if (key.equals("enter")) {
+        try {
+          this.api.executeStatement("insert into User (username, password) values(" +
+                  "\'" + this.username + "\', \'" + this.password + "\')");
+          this.users = this.api.retrieveUsers();
+          this.loginFail = false;
+          this.loggedIn = true;
+          this.initBoard(this.width, this.height);
+        }
+        catch (SQLException e) {
+          System.err.println(e.getMessage());
+          System.err.println("Username already exists");
+        }
+      }
     }
     else if (!this.loggedIn) {
       this.loginKeyEvent(key);
+    }
+    else if (this.allConnected()) {
+      if (key.equals("r")) {
+        this.initBoard(this.width, this.height);
+      }
     }
     else {
       this.gameKeyEvent(key);
     }
   }
 
-  // key event when the user is logging in
+  // key events when the user is logging in
   // changes username and password in this
   void loginKeyEvent(String key) {
     if(key.equals("backspace")) {
       if(this.username.length() > 0 && this.tempUse % 4 == 0) {
         this.username = this.username.substring(0, this.username.length() - 1);
       }
-      else if(this.password.length() > 0){
+      else if(this.password.length() > 0 && this.tempUse % 4 == 1){
         this.password = this.password.substring(0, this.password.length() - 1);
+      }
+      else if(this.tempUse % 4 == 2) {
+        this.height = 0;
+      }
+      else if(this.tempUse % 4 == 3) {
+        this.width = 0;
       }
     }
     else if(key.equals("tab")) {
@@ -646,7 +695,16 @@ class LightEmAll extends World {
 
   // adds one to the time in this every tick
   public void onTick() {
-    this.time++;
+    if (!this.allConnected()) {
+      this.time++;
+    }
+    else if (this.allConnected() && this.loggedIn && !this.loginFail && this.tempUse == 0){
+      this.api.insertStatement("insert into Results values(\'" +
+              this.username + "\', \'" + Integer.toString(this.height) + "\', \'" +
+              Integer.toString(this.width) + "\', \'" + Integer.toString(this.time) +
+              "\', \'" + Integer.toString(this.moves) + "\')");
+      this.tempUse++;
+    }
   }
   
   // are all the nodes in this connected

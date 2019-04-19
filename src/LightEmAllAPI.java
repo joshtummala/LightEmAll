@@ -13,8 +13,7 @@ public class LightEmAllAPI {
         this.dbUtils = dbUtils;
     }
 
-    public void executeStatement(String sql) {
-        try {
+    public void executeStatement(String sql) throws SQLException {
             // get connection and initialize statement
             Connection con = dbUtils.getConnection();
             Statement stmt = con.createStatement();
@@ -22,12 +21,6 @@ public class LightEmAllAPI {
 
             // Cleanup
             stmt.close();
-
-        } catch (SQLException e) {
-            System.err.println("ERROR: Could not execute statement: "+sql);
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     public int insertStatement(String sql) {

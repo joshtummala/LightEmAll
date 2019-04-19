@@ -15,7 +15,6 @@ class ExamplesLightEmAll {
   LightEmAll test4;
   LightEmAll test5;
 
-  WorldImage leaderboard;
   WorldImage star1;
 
   GamePiece empty;
@@ -40,7 +39,6 @@ class ExamplesLightEmAll {
   ArrayList<ArrayList<ArrayList<GamePiece>>> quads2;
 
   ArrayList<Edge> edges1;
-  ArrayList<Edge> edges2;
 
   WorldImage square;
   WorldImage square1;
@@ -54,6 +52,7 @@ class ExamplesLightEmAll {
   HashMap<GamePiece, GamePiece> representatives;
   ArrayList<GamePiece> nodes;
   HashMap<GamePiece, Edge> cameFromEdge;
+  ArrayList<Edge> edges2 = new ArrayList<Edge>();
 
 
   Result jack1;
@@ -65,10 +64,10 @@ class ExamplesLightEmAll {
 
 
   void initData() {
-    this.test = new LightEmAll(7, 7, 10);
-    this.test3 = new LightEmAll(2, 2, 2);
-    this.test2 = new LightEmAll(3, 2, 1);
-    this.test4 = new LightEmAll(1, 2, -1);
+    this.test = new LightEmAll(7,7,10);
+    this.test3 = new LightEmAll(2,2,2);
+    this.test2 = new LightEmAll(3,2,1);
+    this.test4 = new LightEmAll(1,2,-1);
     this.test5 = new LightEmAll(5, 5);
     this.empty = new GamePiece(1, 1);
     this.one = new GamePiece(0, 0);
@@ -86,16 +85,14 @@ class ExamplesLightEmAll {
     this.three.right = true;
     this.three.top = true;
     this.three.bottom = true;
-    this.five = new GamePiece(1, 1);
+    this.five = new GamePiece(1,1);
     this.five.top = true;
     this.five.left = true;
-    this.four = new GamePiece(1, 1);
+    this.four = new GamePiece(1,1);
     this.four.top = true;
     this.four.right = true;
-    this.six = new GamePiece(1, 1);
+    this.six = new GamePiece(1,1);
     this.six.bottom = true;
-
-    this.leaderboard = new AboveImage(new TextImage("Top 5 LeaderBoard", 30, Color.BLUE), new EmptyImage());
 
     this.board1 = new ArrayList<ArrayList<GamePiece>>();
     this.board2 = new ArrayList<ArrayList<GamePiece>>();
@@ -212,19 +209,20 @@ class ExamplesLightEmAll {
     this.edges1.add(new Edge(this.two, this.four, 10));
     this.edges1.add(new Edge(this.one, this.three, 41));
     this.edges1.add(new Edge(this.three, this.four, 21));
-
     this.edges2 = new ArrayList<Edge>();
     this.edges2.add(new Edge(this.one, this.two, 91));
     this.edges2.add(new Edge(this.two, this.three, 10));
     this.edges2.add(new Edge(this.three, this.four, 41));
-
-
+    this.cameFromEdge = new HashMap<GamePiece, Edge>();
+    this.cameFromEdge.put(this.two, this.edges2.get(0));
+    this.cameFromEdge.put(this.three, this.edges2.get(1));
+    this.cameFromEdge.put(this.four, this.edges2.get(2));
 
     this.star1 = new OverlayImage(new StarImage(20, 7, OutlineMode.OUTLINE,
             Color.lightGray), new StarImage(20, 7, OutlineMode.SOLID,
             Color.getHSBColor(0.7f, 0.8f, 1f)));
 
-    this.square = new FrameImage(new RectangleImage(50, 50,
+    this.square =  new FrameImage(new RectangleImage(50, 50,
             OutlineMode.SOLID, Color.DARK_GRAY));
     this.power = new OverlayImage(new StarImage(20, 7, OutlineMode.OUTLINE,
             Color.lightGray), new StarImage(20, 7, OutlineMode.SOLID,
@@ -300,6 +298,12 @@ class ExamplesLightEmAll {
 
   }
 
+  void testReconstruct(Tester t) {
+    this.initData();
+    t.checkExpect(this.test.reconstruct(cameFromEdge, this.one, this.two),2);
+    t.checkExpect(this.test.reconstruct(cameFromEdge, this.one, this.three), 3);
+    t.checkExpect(this.test.reconstruct(cameFromEdge, this.three, this.three), 1);
+  }
 
   void testOnTick(Tester t) {
     this.initData();
@@ -457,7 +461,7 @@ class ExamplesLightEmAll {
   void testOnMousePressed(Tester t) {
     this.initData();
     this.test.onMousePressed(new Posn(2000, 2000));
-    t.checkExpect(this.test, new LightEmAll(7, 7, 10));
+    t.checkExpect(this.test, new LightEmAll(7,7,10));
     GamePiece g = this.test.nodes.get(0);
     g.rotate();
     this.test.onMousePressed(new Posn(0, 0));
@@ -471,7 +475,8 @@ class ExamplesLightEmAll {
   // generates a 7x7 Objects.Objects.LightEmAll game
   void testBigBang(Tester t) {
     this.initData();
-    this.test5.bigBang(this.test5.makeScene().width, this.test5.makeScene().height, 1);
+    LightEmAll run = new LightEmAll();
+    run.bigBang(450, 450, 1);
   }
 
   void testDraw(Tester t) {
@@ -499,7 +504,7 @@ class ExamplesLightEmAll {
     board = new AboveImage(board, new OverlayImage(
             new BesideImage(timeCount, moveCount),
             new RectangleImage(50, 40, OutlineMode.SOLID, Color.gray)));
-    WorldScene test = new WorldScene(50, 140);
+    WorldScene test = new WorldScene(450,450);
     test.placeImageXY(this.test4.draw(), 25, 70);
     t.checkExpect(this.test4.makeScene(), test);
 
@@ -531,18 +536,5 @@ class ExamplesLightEmAll {
     t.checkExpect(this.empty.sameGamePiece(this.one), false);
     t.checkExpect(this.one.sameGamePiece(this.two), false);
     t.checkExpect(this.one.sameGamePiece(this.one), true);
-  }
-
-
-  void testReconstruct(Tester t) {
-    this.initData();
-
-    cameFromEdge.put(edges2.get(0).toNode, edges2.get(0));
-
-    t.checkExpect(this.test.reconstruct(cameFromEdge, this.one, this.two),1);
-    t.checkExpect(this.test.reconstruct(cameFromEdge, this.one, this.three), 2);
-    t.checkExpect(this.test.reconstruct(cameFromEdge, this.three, this.one), 2);
-    t.checkExpect(this.test.reconstruct(cameFromEdge, this.three, this.three), 0);
-
   }
 }
