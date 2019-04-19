@@ -442,8 +442,12 @@ class LightEmAll extends World {
     WorldImage pwdBox = new OverlayImage(new TextImage(pwd, 15, Color.darkGray), box);
     WorldImage rowBox = new OverlayImage(new TextImage(rows, 15, Color.darkGray), box);
     WorldImage colBox = new OverlayImage(new TextImage(cols, 15, Color.darkGray), box);
-    board = new OverlayImage(new AboveImage(new AboveImage(new AboveImage(userBox,
-            pwdBox), rowBox), colBox), board);
+    WorldImage text = new AboveImage(new TextImage("Enter all the fields", 15, Color.darkGray),
+            new TextImage("Press \'tab\' to move between fields", 15, Color.darkGray),
+            new TextImage("Press \'enter\' after all fields are filled", 15, Color.darkGray));
+    board = new OverlayImage(new AboveImage(text,
+            new AboveImage(new AboveImage(new AboveImage(userBox,
+            pwdBox), rowBox), colBox)), board);
     return board;
   }
 
